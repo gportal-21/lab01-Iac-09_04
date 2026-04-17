@@ -70,6 +70,6 @@ db_password = {
 
 api_url = {
     localhost = "http://api-localhost:4002"
-    dev       = "http://dev-localhost:5001"
+    dev       = "http://dev-localhost:5002"
 }
 ```
