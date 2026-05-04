@@ -1,14 +1,35 @@
-const http = require("http");
+const express = require("express");
+const multer = require("multer");
+const path = require("path");
 
-const hostname = "0.0.0.0";
+const app = express();
 const port = 3000;
 
-const server = http.createServer((request, response) => {
-  response.statusCode = 200;
-  response.setHeader("Content-Type", "text/plain");
-  response.end("Hola mundo! Un saludo");
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp/;
+    const valid =
+      allowed.test(path.extname(file.originalname).toLowerCase()) &&
+      allowed.test(file.mimetype);
+    cb(valid ? null : new Error("Solo se permiten imágenes"), valid);
+  },
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Bienvenido http://${hostname}:${port}/`);
+app.post("/upload", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No se recibió ningún archivo" });
+  }
+
+  res.set("Content-Type", req.file.mimetype);
+  res.send(req.file.buffer);
+});
+
+app.use((err, req, res, next) => {
+  res.status(400).json({ error: err.message });
+});
+
+app.listen(port, "0.0.0.0", () => {
+  console.log(`API corriendo en http://0.0.0.0:${port}`);
 });
