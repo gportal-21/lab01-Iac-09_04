@@ -1,17 +1,17 @@
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
+import express from "express";
+import multer, { memoryStorage } from "multer";
+import { extname } from "path";
 
 const app = express();
 const port = 3000;
 
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png|gif|webp/;
     const valid =
-      allowed.test(path.extname(file.originalname).toLowerCase()) &&
+      allowed.test(extname(file.originalname).toLowerCase()) &&
       allowed.test(file.mimetype);
     cb(valid ? null : new Error("Solo se permiten imágenes"), valid);
   },
