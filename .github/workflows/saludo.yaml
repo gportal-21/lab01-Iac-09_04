@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Saludo desde main
+        if: github.ref == 'refs/heads/main'
         run: echo "Hola desde el main, mi nombre es Gerson Portal"
       - name: Saludo desde develop
+        if: github.ref == 'refs/heads/develop'
         run: echo "Hola desde develop, mi nombre es Gerson Portal"
